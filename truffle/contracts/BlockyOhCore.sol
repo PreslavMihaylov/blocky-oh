@@ -1,12 +1,12 @@
 pragma solidity ^0.4.18;
 
 contract BlockyOhCore {
+    enum Rarity { Common, Uncommon, Rare, Unique }
     struct Card {
         uint8 attack;
         uint8 health;
+        Rarity rarity;
     }
-    
-    enum Rarity { Common, Uncommon, Rare, Unique }
 
     address owner;
     Card[] public definedCards;
@@ -26,7 +26,7 @@ contract BlockyOhCore {
     }
 
     function createCard(uint8 attack, uint8 health, Rarity rarity) public onlyOwner returns (uint) {
-        definedCards.push(Card(attack, health));
+        definedCards.push(Card(attack, health, rarity));
         uint cardIndex = definedCards.length - 1;
         addCardByRarity(cardIndex, rarity);
         
