@@ -57,10 +57,19 @@ section h1 {
 #errorBox {
     background: #F50;
 }
+
 footer {
     background: #DDD;
     padding: 5px 10px;
     font-size: 0.8em;
     text-align: center;
     border-radius: 3px;
+}
+
+.card {
+    margin: 20px;
+    padding: 20px;
+    height: 250px;
+    border: 2px solid black;
+    display: inline-block;
 }

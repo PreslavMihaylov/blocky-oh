@@ -1,6 +1,6 @@
-const documentRegistryAddress = "0x9fbda871d559710256a2502a2517b794b482db40";
+const documentRegistryAddress = "0x357af39b8e8f6f77de18c90446195108ae1821fd";
 const documentRegistryContractABI =
-[{"constant":true,"inputs":[{"name":"hash","type":"string"}],"name":"verify","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"hash","type":"string"}],"name":"add","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+[{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"uniqueCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"uncommonCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"rareCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"definedCards","outputs":[{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"commonCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"name":"createCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 
 $(document).ready(function() {
 
@@ -11,6 +11,7 @@ $(document).ready(function() {
 
     $('#linkMarketplace').click(function () {
         showView("viewMarketplace")
+        showAllCards();
     });
 
     $('#documentUploadButton').click(uploadDocument);
@@ -46,6 +47,39 @@ function showError(errorMsg) {
     $('#errorBox').show();
     $('#errorBox>button').click(function () {
         $('#errorBox').hide();
+    });
+}
+
+function showAllCards() {
+    if (typeof web3 === 'undefined') {
+        return showError("Please install MetaMask to access the Ethereum Web3 API from your browser.");
+    }
+
+    let contract = web3.eth.contract(documentRegistryContractABI).at(documentRegistryAddress);
+    contract.definedCards.call(0, function(err, result) {
+        var card = {
+            attack: result[0].toNumber(),
+            health: result[1].toNumber(),
+            rarity: result[2].toNumber()
+        };
+        var template = $('#cardTemplate').html();
+        var html = Mustache.to_html(template, card);
+        $('#cards').append(html);
+
+        console.log(result);
+    });
+
+    contract.definedCards.call(1, function(err, result) {
+        var card = {
+            attack: result[0].toNumber(),
+            health: result[1].toNumber(),
+            rarity: result[2].toNumber()
+        };
+        var template = $('#cardTemplate').html();
+        var html = Mustache.to_html(template, card);
+        $('#cards').append(html);
+
+        console.log(result);
     });
 }
 

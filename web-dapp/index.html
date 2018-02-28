@@ -5,9 +5,12 @@
 <head>
     <meta charset="utf-8" />
     <title>Blocky-Oh Trading Card Game</title>
+    <script src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/mustache.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="styles/styles.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -22,7 +25,7 @@
             </ul>
         </div>
     </nav>
-    
+
     <main>
         <section id="loadingBox">Loading ...</section>
 
@@ -33,15 +36,14 @@
         <section id="viewHome">
             <h1>Blocky-Oh Trading Card Game</h1>
             Welcome to the Blocky-Oh Trading Card Game. <br/>
-            This is a TCG based on the Ethereum blockchain, 
+            This is a TCG based on the Ethereum blockchain,
             which allows you to play with cards you can buy and sell on the Ethereum network.
         </section>
 
         <section id="viewMarketplace">
-            <h1>Submit a Document</h1>
-            <p>Contract owners can register (upload) new documents to the "Document Registry" smart contract on the Ethereum blockchain decentralized network.</p>
-            <input type="file" id="documentForUpload" /><br/>
-            <input type="button" id="documentUploadButton" value="Submit" />
+            <h1>Blocky-Oh Cards Registry</h1>
+            <section id="cards">
+            </section>
         </section>
 
         <section id="viewVerifyDocument">
@@ -53,8 +55,19 @@
     </main>
 
     <footer>Blocky-Oh Trading Card Game - Ethereum DApp</footer>
-    
-    <script src="lib/jquery-3.3.1.min.js"></script>
+
     <script src="main.js"></script>
 </body>
+
+<script id="cardTemplate" type="text/template">
+<div class="card" style="width: 20rem;">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <h4 class="card-title">Card title</h4>
+    <p class="card-text">attack: {{attack}}, health: {{health}}, rarity: {{rarity}}</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+</script>
+
 </html>
