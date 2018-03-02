@@ -158,7 +158,7 @@ contract BlockyOhMarket is BlockyOhDuel {
         delete sales[saleId];
     }
 
-    function buyCardSale(uint saleId) public payable {
+    function buyTradedCard(uint saleId) public payable {
         require(saleId < sales.length);
         require(sales[saleId].owner != address(0));
         require(sales[saleId].owner != msg.sender);
