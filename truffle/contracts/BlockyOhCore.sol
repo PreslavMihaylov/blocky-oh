@@ -187,7 +187,7 @@ contract BlockyOhMarket is BlockyOhDuel {
 
         for (uint saleIndex = 0; saleIndex < sales.length; saleIndex++) {
             if (sales[saleIndex].owner == player) {
-                if (salesCount / 2 == page) {
+                if (salesCount / SALE_PAGE_SIZE == page) {
                     playerSales[playerSalesIndex++] = saleIndex;
                 }
 
