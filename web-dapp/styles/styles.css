@@ -9,6 +9,20 @@ h1 {
     font-size: -webkit-xxx-large !important;
 }
 
+.btnstd {
+    width: 5em;
+}
+
+.card-title {
+    text-align: center;
+    font-size: 30px;
+}
+
+.card-img-top {
+    display: block;
+    margin: 0 auto;
+}
+
 #menu {
     font-weight: 400;
     background: #DDD;
