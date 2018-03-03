@@ -3,6 +3,12 @@ body {
     font-family: Lato;
     font-weight: 300;
 }
+
+h1 {
+    text-align: center !important;
+    font-size: -webkit-xxx-large !important;
+}
+
 #menu {
     font-weight: 400;
     background: #DDD;

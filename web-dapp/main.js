@@ -1,17 +1,22 @@
-const documentRegistryAddress = "0x357af39b8e8f6f77de18c90446195108ae1821fd";
+const documentRegistryAddress = "0x163b6a0e038aa3ccde5b617c5a6b968f21594c03";
 const documentRegistryContractABI =
-[{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"uniqueCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"uncommonCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"rareCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"definedCards","outputs":[{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"commonCards","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"name":"createCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+[{"constant":true,"inputs":[],"name":"totalCardsCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"getCardsOf","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"definedCards","outputs":[{"name":"name","type":"string"},{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":false,"inputs":[{"name":"opponent","type":"address"}],"name":"challenge","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"},{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"name":"createCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
 
 $(document).ready(function() {
 
     showView("viewHome");
     $('#linkHome').click(function () {
-        showView("viewHome")
+        showView("viewHome");
+    });
+
+    $('#linkRegistry').click(function () {
+        showView("viewRegistry");
+        $('#cards').empty();
+        showAllCards();
     });
 
     $('#linkMarketplace').click(function () {
-        showView("viewMarketplace")
-        showAllCards();
+        showView("viewMarketplace");
     });
 
     $('#documentUploadButton').click(uploadDocument);
@@ -56,6 +61,42 @@ function showAllCards() {
     }
 
     let contract = web3.eth.contract(documentRegistryContractABI).at(documentRegistryAddress);
+
+    contract.totalCardsCount.call(function(err, result) {
+        let cardsCnt = result.toNumber();
+
+        for (var i = 1; i < cardsCnt; i++) {
+            contract.definedCards.call(i, function(err, result) {
+                var card = {
+                    name: result[0].toString(),
+                    attack: result[1].toNumber(),
+                    health: result[2].toNumber(),
+                    rarity: parseRarity(result[3].toNumber())
+                };
+
+                var template = $('#cardTemplate').html();
+                var html = Mustache.to_html(template, card);
+                $('#cards').append(html);
+            });
+        }
+
+        function parseRarity(rarity) {
+            switch (rarity) {
+                case 0:
+                    return "Common";
+                case 1:
+                    return "Uncommon";
+                case 2:
+                    return "Rare";
+                case 3:
+                    return "Unique";
+                default:
+                    return "Unknown";
+            }
+        }
+    });
+
+    /*
     contract.definedCards.call(0, function(err, result) {
         var card = {
             attack: result[0].toNumber(),
@@ -80,7 +121,7 @@ function showAllCards() {
         $('#cards').append(html);
 
         console.log(result);
-    });
+    });*/
 }
 
 function uploadDocument() {
