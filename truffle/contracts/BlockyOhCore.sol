@@ -117,9 +117,11 @@ contract CardFactory is Ownable {
 
     function getStartingDeck() private pure returns (uint[5]) {
         uint[5] memory startingDeck;
-        for (uint i = 1; i < 6; i++) {
-            startingDeck[i - 1] = i;
-        }
+        startingDeck[0] = 1;
+        startingDeck[1] = 2;
+        startingDeck[2] = 3;
+        startingDeck[3] = 4;
+        startingDeck[4] = 5;
 
         return startingDeck;
     }
