@@ -1,6 +1,6 @@
-const documentRegistryAddress = "0x30753e4a8aad7f8597332e813735def5dd395028";
+const documentRegistryAddress = "0x345ca3e014aaf5dca488057592ee47305d9b3e10";
 const documentRegistryContractABI =
-[{"constant":true,"inputs":[{"name":"player","type":"address"},{"name":"playerCardId","type":"uint256"}],"name":"getCardSaleOfCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"cardSales","outputs":[{"name":"owner","type":"address"},{"name":"playerCardId","type":"uint256"},{"name":"price","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"definedCards","outputs":[{"name":"name","type":"string"},{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"saleId","type":"uint256"}],"name":"getCardSale","outputs":[{"name":"","type":"uint256"},{"name":"","type":"address"},{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCardSalesCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"getSalesByPlayer","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"playerCard","type":"uint256"}],"name":"getPlayerCardOf","outputs":[{"name":"","type":"string"},{"name":"","type":"uint8"},{"name":"","type":"uint8"},{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCardsCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"getCardsOf","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"saleId","type":"uint256"}],"name":"buyTradedCard","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"playerCardId","type":"uint256"},{"name":"price","type":"uint256"}],"name":"setCardForSale","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"opponent","type":"address"}],"name":"challenge","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"},{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"name":"createCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"saleId","type":"uint256"}],"name":"removeCardSale","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
+[{"constant":true,"inputs":[{"name":"player","type":"address"},{"name":"playerCardId","type":"uint256"}],"name":"getCardSaleOfCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"cardSales","outputs":[{"name":"owner","type":"address"},{"name":"playerCardId","type":"uint256"},{"name":"price","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"definedCards","outputs":[{"name":"name","type":"string"},{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"saleId","type":"uint256"}],"name":"getCardSale","outputs":[{"name":"","type":"uint256"},{"name":"","type":"address"},{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCardSalesCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"getSalesByPlayer","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"playerCard","type":"uint256"}],"name":"getPlayerCardOf","outputs":[{"name":"","type":"string"},{"name":"","type":"uint8"},{"name":"","type":"uint8"},{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCardsCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"getCardsOf","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"player","type":"address"}],"name":"isPlayerRegistered","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"saleId","type":"uint256"}],"name":"buyTradedCard","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"playerCardId","type":"uint256"},{"name":"price","type":"uint256"}],"name":"setCardForSale","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"opponent","type":"address"}],"name":"challenge","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"},{"name":"attack","type":"uint8"},{"name":"health","type":"uint8"},{"name":"rarity","type":"uint8"}],"name":"createCard","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"saleId","type":"uint256"}],"name":"removeCardSale","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
 
 let contract = web3.eth.contract(documentRegistryContractABI).at(documentRegistryAddress);
 
@@ -20,7 +20,7 @@ $(document).ready(function() {
     $('#linkMarketplace').click(function () {
         showView("viewMarketplace");
         $('#card-sales').empty();
-        showAllCardSales();
+        showMarketplace();
     });
 
     $('#linkMyDeck').click(function () {
@@ -88,11 +88,37 @@ function showAllCards() {
     });
 }
 
-function showAllCardSales() {
+function showMarketplace() {
     if (typeof web3 === 'undefined') {
         return showError("Please install MetaMask to access the Ethereum Web3 API from your browser.");
     }
 
+    let myAddress = web3.eth.accounts[0];
+    if (!myAddress) return showError("Please log in to MetaMask");
+
+    contract.isPlayerRegistered(myAddress, function(err, result) {
+        if (err) return showError("Smart contract call failed: " + err);
+
+        let isRegistered = result;
+        console.log(isRegistered);
+
+        if (isRegistered) {
+            showAllCardSales(myAddress);
+        } else {
+            var registerData = {
+                registerTitle:
+                    "You aren't registered to Blocky-Oh yet. " +
+                    "Register today to get your starting deck!"
+            };
+
+            template = $('#registerTemplate').html();
+            var html = Mustache.to_html(template, registerData);
+            $('#card-sales').append(html);
+        }
+    });
+}
+
+function showAllCardSales() {
     contract.totalCardSalesCount.call(function(err, result) {
         let cardSalesCnt = result.toNumber();
 
@@ -137,8 +163,45 @@ function showMyDeck() {
     let myAddress = web3.eth.accounts[0];
     if (!myAddress) return showError("Please log in to MetaMask");
 
+    contract.isPlayerRegistered(myAddress, function(err, result) {
+        if (err) return showError("Smart contract call failed: " + err);
+
+        let isRegistered = result;
+        console.log(isRegistered);
+        if (isRegistered) {
+            displayDeck(myAddress);
+        } else {
+            var registerData = {
+                registerTitle:
+                    "You aren't registered to Blocky-Oh yet. " +
+                    "Register today to get your starting deck!"
+            };
+
+            template = $('#registerTemplate').html();
+            var html = Mustache.to_html(template, registerData);
+            $('#my-deck').append(html);
+        }
+    });
+}
+
+function registerPlayer() {
+    if (typeof web3 === 'undefined') {
+        return showError("Please install MetaMask to access the Ethereum Web3 API from your browser.");
+    }
+
+    let myAddress = web3.eth.accounts[0];
+    if (!myAddress) return showError("Please log in to MetaMask");
+
+    contract.register(function(err, result) {
+        if (err) return showError("Smart contract call failed: " + err);
+
+        return showInfo("You have successfully registered to Blocky-Oh");
+    });
+}
+
+function displayDeck(myAddress) {
     contract.getCardsOf.call(myAddress, function(err, result) {
-        if (err) return showError("Smart contract call failed");
+        if (err) return showError("Smart contract call failed: " + err);
 
         for (let i = 0; i < result.length; i++) {
             let cardId = result[i].toNumber();
