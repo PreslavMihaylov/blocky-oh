@@ -26,19 +26,20 @@ function duelResultHandler(err, result) {
         outcome: hasWon ? "You have won" : "You have lost"
     };
 
-    $('#duelResultModal').modal();
-    var template = $('#duelResultTemplate').html();
-    var html = Mustache.to_html(template, duelResult);
-    $('#duelResultModalBody').empty();
-    $('#duelResultModalBody').append(html);
+    $.get('templates/duelResultTemplate.html', function(template) {
+        $('#duelResultModal').modal();
+        var html = Mustache.to_html(template, duelResult);
+        $('#duelResultModalBody').empty();
+        $('#duelResultModalBody').append(html);
 
-    if (hasWon) {
-       $('#duelResultOutcome').removeClass('btn-danger');
-       $('#duelResultOutcome').addClass('btn-success');
-    } else {
-       $('#duelResultOutcome').removeClass('btn-success');
-       $('#duelResultOutcome').addClass('btn-danger');
-    }
+        if (hasWon) {
+           $('#duelResultOutcome').removeClass('btn-danger');
+           $('#duelResultOutcome').addClass('btn-success');
+        } else {
+           $('#duelResultOutcome').addClass('btn-danger');
+           $('#duelResultOutcome').removeClass('btn-success');
+        }
+    });
 }
 
 function newCardWonHandler(err, result) {
@@ -61,10 +62,11 @@ function newCardWonHandler(err, result) {
             rarity: parseRarity(result[3].toNumber())
         };
 
-        $('#newCardWonModal').modal();
-        var template = $('#newCardWonTemplate').html();
-        var html = Mustache.to_html(template, card);
-        $('#newCardWonModalBody').empty();
-        $('#newCardWonModalBody').append(html);
+        $.get('templates/newCardWonTemplate.html', function(template) {
+            $('#newCardWonModal').modal();
+            var html = Mustache.to_html(template, card);
+            $('#newCardWonModalBody').empty();
+            $('#newCardWonModalBody').append(html);
+        });
     });
 }

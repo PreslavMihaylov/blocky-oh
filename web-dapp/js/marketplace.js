@@ -21,9 +21,10 @@ function showMarketplace() {
                     "Register today to get your starting deck!"
             };
 
-            template = $('#registerTemplate').html();
-            var html = Mustache.to_html(template, registerData);
-            $('#card-sales').append(html);
+            $.get('templates/registerTemplate.html', function(template) {
+                var html = Mustache.to_html(template, registerData);
+                $('#card-sales').append(html);
+            });
         }
     });
 }
@@ -56,9 +57,10 @@ function showAllCardSales() {
                     cardSale['health'] = result[2].toNumber();
                     cardSale['rarity'] = parseRarity(result[3].toNumber());
 
-                    var template = $('#cardSaleTemplate').html();
-                    var html = Mustache.to_html(template, cardSale);
-                    $('#card-sales').append(html);
+                    $.get('templates/cardSaleTemplate.html', function(template) {
+                        var html = Mustache.to_html(template, cardSale);
+                        $('#card-sales').append(html);
+                    });
                 });
             });
         }

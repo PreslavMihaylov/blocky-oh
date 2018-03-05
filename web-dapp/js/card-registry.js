@@ -20,9 +20,10 @@ function showCardRegistry() {
                     rarity: parseRarity(result[3].toNumber())
                 };
 
-                var template = $('#cardTemplate').html();
-                var html = Mustache.to_html(template, card);
-                $('#cards').append(html);
+                $.get('templates/cardTemplate.html', function(template) {
+                    var html = Mustache.to_html(template, card);
+                    $('#cards').append(html);
+                );
             });
         }
     });

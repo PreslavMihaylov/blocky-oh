@@ -1,0 +1,17 @@
+<div class="card" style="width: 28em; height: 35em;">
+  <img class="card-img-top" src="res/default.jpg" width="200" height="250" alt="Card image cap">
+  <div class="card-block">
+    <h4 class="card-title">{{name}}</h4>
+    <p class="card-text">
+        <div class="btn btn-warning" style="text-align: center; display: block;" >{{rarity}}</div></br>
+        <span style="float: left;">ATK: <span class="btn btn-danger btnstd">{{attack}}</span></span>
+        <span style="float: right;">DEF: <span class="btn btn-success btnstd">{{health}}</span></span></br>
+        </br>
+
+        <div style="text-align: center; display: block;"></div></br>
+        <span style="float: center; margin: 0 auto; display: block; text-align: center;" onclick="removeCardSale({{saleId}})">
+            <span class="btn btn-info" style="width: 10em">Remove from Sale</span>
+        </span></br>
+    </p>
+  </div>
+</div>

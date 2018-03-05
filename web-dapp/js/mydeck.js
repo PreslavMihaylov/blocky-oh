@@ -20,9 +20,10 @@ function showMyDeck() {
                     "Register today to get your starting deck!"
             };
 
-            template = $('#registerTemplate').html();
-            var html = Mustache.to_html(template, registerData);
-            $('#my-deck').append(html);
+            $.get('templates/registerTemplate.html', function(template) {
+                var html = Mustache.to_html(template, registerData);
+                $('#my-deck').append(html);
+            });
         }
     });
 }
@@ -51,16 +52,18 @@ function displayDeck(myAddress) {
                     contract.getCardSaleOfCard(owner, playerCardId, function(err, result) {
                         if (err) return showError("Smart contract call failed");
                         card['saleId'] = result.toNumber();
-                        let template;
+                        let templateLoc;
 
                         if (card['saleId'] == 0) {
-                            template = $('#myCardNotSellingTemplate').html();
+                            templateLoc = 'templates/myCardNotSellingTemplate.html';
                         } else {
-                            template = $('#myCardSellingTemplate').html();
+                            templateLoc = 'templates/myCardSellingTemplate.html';
                         }
 
-                        var html = Mustache.to_html(template, card);
-                        $('#my-deck').append(html);
+                        $.get(templateLoc, function(template) {
+                            var html = Mustache.to_html(template, card);
+                            $('#my-deck').append(html);
+                        });
                     });
                 });
             }
