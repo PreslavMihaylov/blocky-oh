@@ -1,16 +1,15 @@
 function subscribeToBlockyOhEvents() {
     let duelResult = contract.DuelResult();
     let newCardWon = contract.NewCardWon();
+    let playerRegistered = contract.PlayerRegistered();
 
     duelResult.watch(duelResultHandler);
     newCardWon.watch(newCardWonHandler);
+    playerRegistered.watch(playerRegisteredHandler);
 }
 
 function duelResultHandler(err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
+    if (err) return showError("Event consuming failed: " + err);
 
     console.log(result);
     let challenger = result.args['challenger'];
@@ -43,10 +42,7 @@ function duelResultHandler(err, result) {
 }
 
 function newCardWonHandler(err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
+    if (err) return showError("Event consuming failed: " + err);
 
     console.log(result);
     let owner = result.args['owner'];
@@ -68,5 +64,20 @@ function newCardWonHandler(err, result) {
             $('#newCardWonModalBody').empty();
             $('#newCardWonModalBody').append(html);
         });
+    });
+}
+
+function playerRegisteredHandler(err, result) {
+    if (err) return showError("Event consuming failed: " + err);
+
+    console.log(result);
+    let player = result.args['player'];
+    if (player != web3.eth.accounts[0]) return;
+
+    $.get('templates/registerSuccessfulTemplate.html', function(template) {
+        $('#registerSuccessfulModal').modal();
+        var html = Mustache.to_html(template, {});
+        $('#registerSuccessfulModalBody').empty();
+        $('#registerSuccessfulModalBody').append(html);
     });
 }
