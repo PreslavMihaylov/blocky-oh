@@ -130,6 +130,7 @@ contract BlockyOhDuel is CardFactory {
     event NewCardWon(address owner, uint cardId);
 
     function challenge(address opponent) public bothPlayersRegistered(msg.sender, opponent) {
+        require(msg.sender != opponent);
         uint result = rand(100);
 
         address winner;

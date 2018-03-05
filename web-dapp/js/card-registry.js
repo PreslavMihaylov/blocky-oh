@@ -23,7 +23,7 @@ function showCardRegistry() {
                 $.get('templates/cardTemplate.html', function(template) {
                     var html = Mustache.to_html(template, card);
                     $('#cards').append(html);
-                );
+                });
             });
         }
     });
