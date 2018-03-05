@@ -5,6 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Blocky-Oh Trading Card Game</title>
+    <script src="lib/sweetalert.min.js"></script>
     <script src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/mustache.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -23,6 +24,7 @@
                 <li class="active"><a href="#" id="linkHome">Home</a></li>
                 <li><a href="#" id="linkRegistry">Registry</a></li>
                 <li><a href="#" id="linkMarketplace">Marketplace</a></li>
+                <li><a href="#" id="linkMyDeck">My Deck</a></li>
             </ul>
         </div>
     </nav>
@@ -49,6 +51,11 @@
         <section id="viewMarketplace">
             <h1>Blocky-Oh Marketplace</h1>
             <section id="card-sales"></section>
+        </section>
+
+        <section id="viewMyDeck">
+            <h1>Your Blocky-Oh Deck</h1>
+            <section id="my-deck"></section>
         </section>
     </main>
 
@@ -90,6 +97,26 @@
         <div class="btn btn-primary" style="text-align: center; display: block;">{{price}} ETH</div></br>
         <span style="float: center; margin: 0 auto; display: block; text-align: center;" onclick="buyCard({{saleId}})">
             <span class="btn btn-success btnstd">Buy</span>
+        </span></br>
+    </p>
+  </div>
+</div>
+</script>
+
+<script id="myDeckTemplate" type="text/template">
+<div class="card" style="width: 28em; height: 35em;">
+  <img class="card-img-top" src="res/default.jpg" width="200" height="250" alt="Card image cap">
+  <div class="card-block">
+    <h4 class="card-title">{{name}}</h4>
+    <p class="card-text">
+        <div class="btn btn-warning" style="text-align: center; display: block;" >{{rarity}}</div></br>
+        <span style="float: left;">ATK: <span class="btn btn-danger btnstd">{{attack}}</span></span>
+        <span style="float: right;">DEF: <span class="btn btn-success btnstd">{{health}}</span></span></br>
+        </br>
+
+        <div style="text-align: center; display: block;"></div></br>
+        <span style="float: center; margin: 0 auto; display: block; text-align: center;" onclick="sellCard(0)">
+            <span class="btn btn-primary" style="width: 10em">Sell</span>
         </span></br>
     </p>
   </div>
