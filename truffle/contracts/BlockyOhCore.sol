@@ -126,7 +126,10 @@ contract CardFactory is Ownable {
 }
 
 contract BlockyOhDuel is CardFactory {
-    function challenge(address opponent) public bothPlayersRegistered(msg.sender, opponent) returns (bool) {
+    event DuelResult(address challenger, address opponent, bool hasWon);
+    event NewCardWon(address owner, uint cardId);
+
+    function challenge(address opponent) public bothPlayersRegistered(msg.sender, opponent) {
         uint result = rand(100);
 
         address winner;
@@ -138,10 +141,13 @@ contract BlockyOhDuel is CardFactory {
 
         personWinsCount[winner]++;
         if (hasWonFiveTimes(winner)) {
-            playerCards[winner].push(getRandomCard());
+            uint wonCardId = getRandomCard();
+            playerCards[winner].push(wonCardId);
+
+            NewCardWon(msg.sender, wonCardId);
         }
 
-        return winner == msg.sender;
+        DuelResult(msg.sender, opponent, winner == msg.sender);
     }
 
     function hasWonFiveTimes(address player) private view returns (bool) {
