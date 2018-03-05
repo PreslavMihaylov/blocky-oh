@@ -43,6 +43,16 @@ contract CardFactory is Ownable {
         _;
     }
 
+    modifier userIsRegistered(address player) {
+        require(playerCards[player].length > 0);
+        _;
+    }
+
+    modifier userIsNotRegistered(address player) {
+        require(playerCards[player].length == 0);
+        _;
+    }
+
     function CardFactory() public {
         // genesis card
         definedCards.push(Card("", 0, 0, Rarity.Unique));
@@ -55,10 +65,12 @@ contract CardFactory is Ownable {
         definedCards.push(Card("TurtleGuy", 2, 15, Rarity.Common));
     }
 
-    function register() public {
-        require(playerCards[msg.sender].length == 0);
-
+    function register() public userIsNotRegistered(msg.sender) {
         playerCards[msg.sender] = getStartingDeck();
+    }
+
+    function isPlayerRegistered(address player) public view returns (bool) {
+        return playerCards[player].length > 0;
     }
 
     function getCardsOf(address owner) public view returns (uint[]) {
@@ -207,6 +219,7 @@ contract BlockyOhMarket is BlockyOhDuel {
         require(cardSales[saleId].owner != address(0));
         require(cardSales[saleId].owner != msg.sender);
         require(cardSales[saleId].price == msg.value);
+        require(isPlayerRegistered(msg.sender));
 
         address saleOwner = cardSales[saleId].owner;
         uint ownerCardId = cardSales[saleId].playerCardId;
