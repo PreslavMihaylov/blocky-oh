@@ -22,6 +22,7 @@
             </div>
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#" id="linkHome">Home</a></li>
+                <li><a href="#" id="linkDuel">Duel!</a></li>
                 <li><a href="#" id="linkRegistry">Registry</a></li>
                 <li><a href="#" id="linkMarketplace">Marketplace</a></li>
                 <li><a href="#" id="linkMyDeck">My Deck</a></li>
@@ -30,6 +31,36 @@
     </nav>
 
     <main>
+       <div id="duelResultModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+              </div>
+              <div class="modal-body" id="duelResultModalBody"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+       <div id="newCardWonModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+              </div>
+              <div class="modal-body" id="newCardWonModalBody"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
         <section id="loadingBox">Loading ...</section>
 
         <section id="infoBox" ><button class="btn btn-basic">x</button><p>Info</p></section>
@@ -38,9 +69,15 @@
 
         <section id="viewHome">
             <h1>Blocky-Oh Trading Card Game</h1>
-            Welcome to the Blocky-Oh Trading Card Game. <br/>
-            This is a TCG based on the Ethereum blockchain,
-            which allows you to play with cards you can buy and sell on the Ethereum network.
+
+            <h3 style="text-align: center;">Welcome to the Blocky-Oh Trading Card Game. <h3/>
+            <h3 style="text-align: center;">This is a TCG based on the Ethereum blockchain,
+            which allows you to play with cards you can buy and sell on the Ethereum network.<h3>
+        </section>
+
+        <section id="viewDuel">
+            <h1>Blocky-Oh Duel</h1>
+            <section id="duel"></section>
         </section>
 
         <section id="viewRegistry">
@@ -61,8 +98,54 @@
 
     <footer>Blocky-Oh Trading Card Game - Ethereum DApp</footer>
 
+    <script src="contract.js"></script>
+    <script src="utils.js"></script>
+    <script src="register.js"></script>
+    <script src="blockyOhEventHandlers.js"></script>
+    <script src="marketplace.js"></script>
+    <script src="card-registry.js"></script>
+    <script src="mydeck.js"></script>
+    <script src="duel.js"></script>
     <script src="main.js"></script>
 </body>
+
+<script id="duelResultTemplate" type="text/template">
+<div style="width: 28em; height: 58rem; margin: 0 auto;">
+  <img class="card-img-top" src="res/duel.png" width="200" height="250" alt="Card image cap">
+  <div class="card-block">
+    <h4 class="card-title">Blocky-Oh Duel Result</h4>
+    <p class="card-text" style="text-align: center;">
+        <span class="btn btn-primary" style="display: block;">{{challenger}}</span>
+        <div style="text-align: center; display: block; margin: 10px;">VS.</div>
+        <span class="btn btn-primary" style="display: block;">{{opponent}}</span>
+
+        <h2 style="text-align: center; display: block;">Outcome</h2></br>
+        <div id="duelResultOutcome"
+             class="btn"
+             style="text-align: center; display: block;">{{outcome}}</div></br>
+    </p>
+  </div>
+</div>
+</script>
+
+<script id="newCardWonTemplate" type="text/template">
+<div style="width: 28em; height: 58rem; margin: 0 auto;">
+  <div class="card-block">
+    <h4 class="card-title">You have won a new card!</h4>
+    <div class="card" style="width: 28em; height: 45rem; margin: 0 auto;">
+      <img class="card-img-top" src="res/default.jpg" width="200" height="250" alt="Card image cap">
+      <div class="card-block">
+        <h4 class="card-title">{{name}}</h4>
+        <p class="card-text">
+            <div class="btn btn-warning" style="text-align: center; display: block;" >{{rarity}}</div></br>
+            <span style="float: left;">ATK: <span class="btn btn-danger btnstd">{{attack}}</span></span>
+            <span style="float: right;">DEF: <span class="btn btn-success btnstd">{{health}}</span></span></br>
+        </p>
+      </div>
+    </div>
+    <h4 class="card-title">Congratulations!</h4>
+</div>
+</script>
 
 <script id="cardTemplate" type="text/template">
 <div class="card" style="width: 28em; height: 45rem;">
