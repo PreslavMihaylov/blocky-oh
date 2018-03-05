@@ -214,6 +214,18 @@ function sellCard(playerCardId) {
     });
 }
 
+function removeCardSale(saleId) {
+    if (typeof web3 === 'undefined') {
+        return showError("Please install MetaMask to access the Ethereum Web3 API from your browser.");
+    }
+
+    contract.removeCardSale(saleId, function(err, result) {
+        if (err) showError("Call to smart contract failed: " + err);
+
+        showInfo("Card successfully removed from sale");
+    });
+}
+
 function JSPrompt(title, placeholder, callback) {
     swal({
         title: title,
