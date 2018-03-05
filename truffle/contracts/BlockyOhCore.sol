@@ -165,10 +165,23 @@ contract BlockyOhMarket is BlockyOhDuel {
         return salesByPlayer[owner];
     }
 
+    function getCardSaleOfCard(address player, uint playerCardId) public view returns (uint) {
+        for (uint i = 0; i < salesByPlayer[player].length; i++) {
+            uint currentSale = salesByPlayer[player][i];
+            if (cardSales[currentSale].owner == player &&
+                cardSales[currentSale].playerCardId == playerCardId) {
+
+                return currentSale;
+            }
+        }
+
+        return 0;
+    }
+
     function setCardForSale(uint playerCardId, uint price) public returns (uint) {
         require(playerCardId < playerCards[msg.sender].length);
         require(playerCards[msg.sender][playerCardId] != 0);
-        require(!isCardSoldByPlayer(msg.sender, playerCardId));
+        require(getCardSaleOfCard(msg.sender, playerCardId) == 0);
 
         cardSales.push(CardSale(msg.sender, playerCardId, price));
         salesByPlayer[msg.sender].push(cardSales.length - 1);
@@ -181,6 +194,12 @@ contract BlockyOhMarket is BlockyOhDuel {
         require(cardSales[saleId].owner == msg.sender);
 
         delete cardSales[saleId];
+        for (uint i = 0; i < salesByPlayer[msg.sender].length; i++) {
+            if (salesByPlayer[msg.sender][i] == saleId) {
+                delete salesByPlayer[msg.sender][i];
+                break;
+            }
+        }
     }
 
     function buyTradedCard(uint saleId) public payable {
@@ -205,18 +224,5 @@ contract BlockyOhMarket is BlockyOhDuel {
 
         delete cardSales[saleId];
         saleOwner.transfer(msg.value);
-    }
-
-    function isCardSoldByPlayer(address player, uint playerCardId) private view returns (bool) {
-        for (uint i = 0; i < salesByPlayer[player].length; i++) {
-            uint currentSale = salesByPlayer[player][i];
-            if (cardSales[currentSale].owner == player &&
-                cardSales[currentSale].playerCardId == playerCardId) {
-
-                return true;
-            }
-        }
-
-        return false;
     }
 }
