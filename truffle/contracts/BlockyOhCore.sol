@@ -33,6 +33,8 @@ contract CardFactory is Ownable {
         Rarity rarity;
     }
 
+    event PlayerRegistered(address player);
+
     Card[] public definedCards;
     mapping(address => uint[]) playerCards;
     mapping(address => uint) personWinsCount;
@@ -67,6 +69,7 @@ contract CardFactory is Ownable {
 
     function register() public userIsNotRegistered(msg.sender) {
         playerCards[msg.sender] = getStartingDeck();
+        PlayerRegistered(msg.sender);
     }
 
     function isPlayerRegistered(address player) public view returns (bool) {
@@ -87,11 +90,8 @@ contract CardFactory is Ownable {
         return definedCards.length;
     }
 
-    function createCard(string name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner returns (uint) {
+    function createCard(string name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner {
         definedCards.push(Card(name, attack, health, rarity));
-        uint cardId = definedCards.length - 1;
-
-        return cardId;
     }
 
     function getRandomCard() internal view returns (uint) {
@@ -164,6 +164,10 @@ contract BlockyOhMarket is BlockyOhDuel {
         uint price;
     }
 
+    event NewCardSale(address owner, uint saleId);
+    event CardSaleRemoved(address owner, uint cardId);
+    event CardBought(address owner, uint cardId);
+
     CardSale[] public cardSales;
     mapping(address => uint[]) salesByPlayer;
 
@@ -197,7 +201,7 @@ contract BlockyOhMarket is BlockyOhDuel {
         return 0;
     }
 
-    function setCardForSale(uint playerCardId, uint price) public returns (uint) {
+    function setCardForSale(uint playerCardId, uint price) public {
         require(playerCardId < playerCards[msg.sender].length);
         require(playerCards[msg.sender][playerCardId] != 0);
         require(getCardSaleOfCard(msg.sender, playerCardId) == 0);
@@ -205,12 +209,15 @@ contract BlockyOhMarket is BlockyOhDuel {
         cardSales.push(CardSale(msg.sender, playerCardId, price));
         salesByPlayer[msg.sender].push(cardSales.length - 1);
 
-        return cardSales.length - 1;
+        NewCardSale(msg.sender, cardSales.length - 1);
     }
 
     function removeCardSale(uint saleId) public {
         require(saleId < cardSales.length);
         require(cardSales[saleId].owner == msg.sender);
+
+        uint playerCardId = cardSales[saleId].playerCardId;
+        uint cardId = playerCards[msg.sender][playerCardId];
 
         delete cardSales[saleId];
         for (uint i = 0; i < salesByPlayer[msg.sender].length; i++) {
@@ -219,6 +226,8 @@ contract BlockyOhMarket is BlockyOhDuel {
                 break;
             }
         }
+
+        CardSaleRemoved(msg.sender, cardId);
     }
 
     function buyTradedCard(uint saleId) public payable {
@@ -231,7 +240,8 @@ contract BlockyOhMarket is BlockyOhDuel {
         address saleOwner = cardSales[saleId].owner;
         uint ownerCardId = cardSales[saleId].playerCardId;
 
-        playerCards[msg.sender].push(playerCards[saleOwner][ownerCardId]);
+        uint boughtCardId = playerCards[saleOwner][ownerCardId];
+        playerCards[msg.sender].push(boughtCardId);
         delete playerCards[saleOwner][ownerCardId];
 
         // delete sale from sale owner's sales struct
@@ -244,5 +254,7 @@ contract BlockyOhMarket is BlockyOhDuel {
 
         delete cardSales[saleId];
         saleOwner.transfer(msg.value);
+
+        CardBought(msg.sender, boughtCardId);
     }
 }
