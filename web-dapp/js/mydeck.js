@@ -2,7 +2,8 @@ function showMyDeck() {
     validatePlayerRegistered('#my-deck', displayDeck);
 }
 
-function displayDeck(myAddress) {
+function displayDeck() {
+    let myAddress = web3.eth.accounts[0];
     contract.getCardsOf.call(myAddress, function(err, result) {
         if (err) return showError("Smart contract call failed: " + err);
 

@@ -2,10 +2,12 @@ function subscribeToBlockyOhEvents() {
     let duelResult = contract.DuelResult();
     let newCardWon = contract.NewCardWon();
     let playerRegistered = contract.PlayerRegistered();
+    let newCardSale = contract.NewCardSale();
 
     duelResult.watch(duelResultHandler);
     newCardWon.watch(newCardWonHandler);
     playerRegistered.watch(playerRegisteredHandler);
+    newCardSale.watch(newCardSaleHandler);
 }
 
 function duelResultHandler(err, result) {
@@ -79,5 +81,23 @@ function playerRegisteredHandler(err, result) {
         var html = Mustache.to_html(template, {});
         $('#registerSuccessfulModalBody').empty();
         $('#registerSuccessfulModalBody').append(html);
+    });
+}
+
+function newCardSaleHandler(err, result) {
+    if (err) return showError("Event consuming failed: " + err);
+
+    console.log(result);
+    let owner = result.args['owner'];
+    let saleId = result.args['saleId'];
+    if (owner != web3.eth.accounts[0]) return;
+
+    getCardSaleData(saleId, function(cardSaleData) {
+        $.get('templates/newCardSaleTemplate.html', function(template) {
+            $('#newCardSaleModal').modal();
+            var html = Mustache.to_html(template, cardSaleData);
+            $('#newCardSaleModalBody').empty();
+            $('#newCardSaleModalBody').append(html);
+        });
     });
 }

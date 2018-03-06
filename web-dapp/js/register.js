@@ -42,7 +42,7 @@ function registerPlayer() {
     contract.register(function(err, result) {
         if (err) return showError("Smart contract call failed: " + err);
 
-        return showInfo("You have successfully registered to Blocky-Oh");
+        return showInfo("Blocky-Oh registration pending");
     });
 }
 

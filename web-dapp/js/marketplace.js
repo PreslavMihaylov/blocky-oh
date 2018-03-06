@@ -7,36 +7,44 @@ function showAllCardSales() {
         let cardSalesCnt = result.toNumber();
 
         for (var i = 1; i < cardSalesCnt; i++) {
-            contract.getCardSale.call(i, function(err, result) {
-                if (err) return showError("Smart contract call failed: " + err);
-                var playerCardId = result[2].toNumber();
-                var owner = result[1];
-                if (owner == 0) return;
-
-                var cardSale = {
-                    owner: owner,
-                    price: Number(weiToEth(result[3].toNumber())).toFixed(20).replace(/\.?0+$/,""),
-                    saleId: result[0].toNumber()
-                };
-
-                if (owner == web3.eth.accounts[0]) {
-                    cardSale['owner'] = "You";
-                }
-
-                contract.getPlayerCardOf.call(owner, playerCardId, function(err, result) {
-                    if (err) return showError("Smart contract call failed: " + err);
-                    cardSale['name'] = result[0].toString();
-                    cardSale['attack'] = result[1].toNumber();
-                    cardSale['health'] = result[2].toNumber();
-                    cardSale['rarity'] = parseRarity(result[3].toNumber());
-
-                    $.get('templates/cardSaleTemplate.html', function(template) {
-                        var html = Mustache.to_html(template, cardSale);
-                        $('#card-sales').append(html);
-                    });
+            getCardSaleData(i, function(cardSaleData) {
+                $.get('templates/cardSaleTemplate.html', function(template) {
+                    var html = Mustache.to_html(template, cardSaleData);
+                    $('#card-sales').append(html);
                 });
             });
         }
+    });
+}
+
+function getCardSaleData(saleId, callback) {
+    contract.getCardSale.call(saleId, function(err, result) {
+        if (err) return showError("Smart contract call failed: " + err);
+
+        var playerCardId = result[2].toNumber();
+        var owner = result[1];
+        if (owner == 0) return;
+
+        var cardSale = {
+            owner: owner,
+            price: Number(weiToEth(result[3].toNumber())).toFixed(20).replace(/\.?0+$/,""),
+            saleId: result[0].toNumber()
+        };
+
+        if (owner == web3.eth.accounts[0]) {
+            cardSale['owner'] = "You";
+        }
+
+        contract.getPlayerCardOf.call(owner, playerCardId, function(err, result) {
+            if (err) return showError("Smart contract call failed: " + err);
+
+            cardSale['name'] = result[0].toString();
+            cardSale['attack'] = result[1].toNumber();
+            cardSale['health'] = result[2].toNumber();
+            cardSale['rarity'] = parseRarity(result[3].toNumber());
+
+            callback(cardSale);
+        });
     });
 }
 
@@ -48,7 +56,7 @@ function removeCardSale(saleId) {
     contract.removeCardSale(saleId, function(err, result) {
         if (err) showError("Call to smart contract failed: " + err);
 
-        showInfo("Card successfully removed from sale");
+        showInfo("Removing card from sale pending...");
     });
 }
 
@@ -67,8 +75,7 @@ function buyCard(saleId) {
 
         contract.buyTradedCard(saleId, {value: 5}, function(err, result) {
              if (err) return showError("Smart contract call failed: " + err);
-             showInfo("Successfully purchased Blocky Oh Card");
-             //location.reload();
+             showInfo("Card purchase pending...");
         });
     });
 }
@@ -84,7 +91,7 @@ function sellCard(playerCardId) {
 
         contract.setCardForSale(playerCardId, ethToWei(price), function(err, result) {
             if (err) return showError("Smart contract call failed: " + err);
-            showInfo("Card Sale publishing pending");
+            showInfo("Card Sale publishing pending...");
         });
     });
 }
