@@ -1,3 +1,7 @@
+function showDuelSection() {
+    validatePlayerRegistered('#duel', performDuel);
+}
+
 function performDuel() {
     if (typeof web3 === 'undefined') {
         return showError("Please install MetaMask to access the Ethereum Web3 API from your browser.");

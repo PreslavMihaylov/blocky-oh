@@ -7,7 +7,7 @@ $(document).ready(function() {
     $('#linkDuel').click(function () {
         showView("viewDuel");
         $('#duel').empty();
-        performDuel();
+        showDuelSection();
     });
 
     $('#linkRegistry').click(function () {
