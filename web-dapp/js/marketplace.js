@@ -67,13 +67,15 @@ function buyCard(saleId) {
 
     contract.cardSales(saleId, function(err, result) {
         if (err) return showError("Smart contract call failed: " + err);
+
         console.log(result);
         if (result[0] == web3.eth.accounts[0]) {
             swal("You can't buy a card, which is put on sale by you");
             return;
         }
 
-        contract.buyTradedCard(saleId, {value: 5}, function(err, result) {
+        let cardPrice = result[2].toNumber();
+        contract.buyTradedCard(saleId, {value: cardPrice}, function(err, result) {
              if (err) return showError("Smart contract call failed: " + err);
              showInfo("Card purchase pending...");
         });

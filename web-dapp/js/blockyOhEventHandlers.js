@@ -1,15 +1,17 @@
 function subscribeToBlockyOhEvents() {
-    let duelResult = contract.DuelResult();
-    let newCardWon = contract.NewCardWon();
-    let playerRegistered = contract.PlayerRegistered();
-    let newCardSale = contract.NewCardSale();
-    let cardSaleRemoved = contract.CardSaleRemoved();
+    let duelResultEvent = contract.DuelResult();
+    let newCardWonEvent = contract.NewCardWon();
+    let playerRegisteredEvent = contract.PlayerRegistered();
+    let newCardSaleEvent = contract.NewCardSale();
+    let cardSaleRemovedEvent = contract.CardSaleRemoved();
+    let cardBoughtEvent = contract.CardBought();
 
-    duelResult.watch(duelResultHandler);
-    newCardWon.watch(newCardWonHandler);
-    playerRegistered.watch(playerRegisteredHandler);
-    newCardSale.watch(newCardSaleHandler);
-    cardSaleRemoved.watch(cardSaleRemovedHandler);
+    duelResultEvent.watch(duelResultHandler);
+    newCardWonEvent.watch(newCardWonHandler);
+    playerRegisteredEvent.watch(playerRegisteredHandler);
+    newCardSaleEvent.watch(newCardSaleHandler);
+    cardSaleRemovedEvent.watch(cardSaleRemovedHandler);
+    cardBoughtEvent.watch(cardBoughtHandler);
 }
 
 function duelResultHandler(err, result) {
@@ -114,6 +116,25 @@ function cardSaleRemovedHandler(err, result) {
             var html = Mustache.to_html(template, cardData);
             $('#cardSaleRemovedModalBody').empty();
             $('#cardSaleRemovedModalBody').append(html);
+        });
+    });
+}
+
+function cardBoughtHandler(err, result) {
+    if (err) return showError("Event consuming failed: " + err);
+
+    console.log(result);
+    let owner = result.args['owner'];
+    let cardId = result.args['cardId'];
+    if (owner != web3.eth.accounts[0]) return;
+
+    getCardData(cardId, function(cardData) {
+        $.get('templates/cardBoughtTemplate.html', function(template) {
+            $('#cardBoughtModal').modal();
+
+            var html = Mustache.to_html(template, cardData);
+            $('#cardBoughtModalBody').empty();
+            $('#cardBoughtModalBody').append(html);
         });
     });
 }
