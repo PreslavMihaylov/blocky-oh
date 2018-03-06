@@ -1,5 +1,7 @@
 pragma solidity ^0.4.18;
 
+import './SafeMath.sol';
+
 /**
  * taken from https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/ownership/Ownable.sol
  */
@@ -25,6 +27,10 @@ contract Ownable {
 }
 
 contract CardFactory is Ownable {
+    using SafeMath for uint256;
+    using SafeMath for uint32;
+    using SafeMath for uint16;
+
     enum Rarity { Common, Uncommon, Rare, Unique }
     struct Card {
         string name;
@@ -95,20 +101,20 @@ contract CardFactory is Ownable {
     }
 
     function getRandomCard() internal view returns (uint) {
-        return rand(definedCards.length - 1) + 1;
+        return rand(definedCards.length - 1).add(1);
     }
 
     function rand(uint max) internal view returns (uint) {
-        uint seed = uint256(block.blockhash(block.number)) + uint256(now);
+        uint seed = uint256(block.blockhash(block.number)).add(uint256(now));
 
         return uint(keccak256(seed)) % max;
     }
 
     function playerCardCount(address player, uint cardId) internal view returns (uint) {
         uint count = 0;
-        for (uint i = 0; i < playerCards[player].length; i++) {
+        for (uint i = 0; i < playerCards[player].length; i.add(1)) {
             if (playerCards[player][i] == cardId) {
-                count++;
+                count.add(1);
             }
         }
 
@@ -128,6 +134,10 @@ contract CardFactory is Ownable {
 }
 
 contract BlockyOhDuel is CardFactory {
+    using SafeMath for uint256;
+    using SafeMath for uint32;
+    using SafeMath for uint16;
+
     event DuelResult(address challenger, address opponent, bool hasWon);
     event NewCardWon(address owner, uint cardId);
 
@@ -142,7 +152,7 @@ contract BlockyOhDuel is CardFactory {
             winner = opponent;
         }
 
-        personWinsCount[winner]++;
+        personWinsCount[winner].add(1);
         if (hasWonFiveTimes(winner)) {
             uint wonCardId = getRandomCard();
             playerCards[winner].push(wonCardId);
@@ -159,6 +169,10 @@ contract BlockyOhDuel is CardFactory {
 }
 
 contract BlockyOhMarket is BlockyOhDuel {
+    using SafeMath for uint256;
+    using SafeMath for uint32;
+    using SafeMath for uint16;
+
     uint constant SALE_PAGE_SIZE = 2;
     struct CardSale {
         address owner;
@@ -191,7 +205,7 @@ contract BlockyOhMarket is BlockyOhDuel {
     }
 
     function getCardSaleOfCard(address player, uint playerCardId) public view returns (uint) {
-        for (uint i = 0; i < salesByPlayer[player].length; i++) {
+        for (uint i = 0; i < salesByPlayer[player].length; i.add(1)) {
             uint currentSale = salesByPlayer[player][i];
             if (cardSales[currentSale].owner == player &&
                 cardSales[currentSale].playerCardId == playerCardId) {
@@ -209,9 +223,9 @@ contract BlockyOhMarket is BlockyOhDuel {
         require(getCardSaleOfCard(msg.sender, playerCardId) == 0);
 
         cardSales.push(CardSale(msg.sender, playerCardId, price));
-        salesByPlayer[msg.sender].push(cardSales.length - 1);
+        salesByPlayer[msg.sender].push(cardSales.length.sub(1));
 
-        NewCardSale(msg.sender, cardSales.length - 1);
+        NewCardSale(msg.sender, cardSales.length.sub(1));
     }
 
     function removeCardSale(uint saleId) public {
@@ -222,7 +236,7 @@ contract BlockyOhMarket is BlockyOhDuel {
         uint cardId = playerCards[msg.sender][playerCardId];
 
         delete cardSales[saleId];
-        for (uint i = 0; i < salesByPlayer[msg.sender].length; i++) {
+        for (uint i = 0; i < salesByPlayer[msg.sender].length; i.add(1)) {
             if (salesByPlayer[msg.sender][i] == saleId) {
                 delete salesByPlayer[msg.sender][i];
                 break;
@@ -247,7 +261,7 @@ contract BlockyOhMarket is BlockyOhDuel {
         delete playerCards[saleOwner][ownerCardId];
 
         // delete sale from sale owner's sales struct
-        for (uint i = 0; i < salesByPlayer[saleOwner].length; i++) {
+        for (uint i = 0; i < salesByPlayer[saleOwner].length; i.add(1)) {
             if (salesByPlayer[saleOwner][i] == saleId) {
                 delete salesByPlayer[saleOwner][i];
                 break;
