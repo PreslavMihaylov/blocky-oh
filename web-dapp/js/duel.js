@@ -3,6 +3,9 @@ function performDuel() {
         return showError("Please install MetaMask to access the Ethereum Web3 API from your browser.");
     }
 
+    let myAddress = web3.eth.accounts[0];
+    if (!myAddress) return showError("Please log in to MetaMask");
+
     JSPrompt("Enter the address of your opponent", "Opponent name", function(opponent) {
         if (!opponent) return showError("Invalid opponent. Try again");
 
