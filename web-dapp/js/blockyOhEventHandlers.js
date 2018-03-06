@@ -3,11 +3,13 @@ function subscribeToBlockyOhEvents() {
     let newCardWon = contract.NewCardWon();
     let playerRegistered = contract.PlayerRegistered();
     let newCardSale = contract.NewCardSale();
+    let cardSaleRemoved = contract.CardSaleRemoved();
 
     duelResult.watch(duelResultHandler);
     newCardWon.watch(newCardWonHandler);
     playerRegistered.watch(playerRegisteredHandler);
     newCardSale.watch(newCardSaleHandler);
+    cardSaleRemoved.watch(cardSaleRemovedHandler);
 }
 
 function duelResultHandler(err, result) {
@@ -51,18 +53,11 @@ function newCardWonHandler(err, result) {
     let cardId = result.args['cardId'];
     if (owner != web3.eth.accounts[0]) return;
 
-    contract.definedCards(cardId, function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
-        let card = {
-            name: result[0].toString(),
-            attack: result[1].toNumber(),
-            health: result[2].toNumber(),
-            rarity: parseRarity(result[3].toNumber())
-        };
-
+    getCardData(cardId, function(cardData) {
         $.get('templates/newCardWonTemplate.html', function(template) {
             $('#newCardWonModal').modal();
-            var html = Mustache.to_html(template, card);
+
+            var html = Mustache.to_html(template, cardData);
             $('#newCardWonModalBody').empty();
             $('#newCardWonModalBody').append(html);
         });
@@ -78,6 +73,7 @@ function playerRegisteredHandler(err, result) {
 
     $.get('templates/registerSuccessfulTemplate.html', function(template) {
         $('#registerSuccessfulModal').modal();
+
         var html = Mustache.to_html(template, {});
         $('#registerSuccessfulModalBody').empty();
         $('#registerSuccessfulModalBody').append(html);
@@ -95,9 +91,29 @@ function newCardSaleHandler(err, result) {
     getCardSaleData(saleId, function(cardSaleData) {
         $.get('templates/newCardSaleTemplate.html', function(template) {
             $('#newCardSaleModal').modal();
+
             var html = Mustache.to_html(template, cardSaleData);
             $('#newCardSaleModalBody').empty();
             $('#newCardSaleModalBody').append(html);
+        });
+    });
+}
+
+function cardSaleRemovedHandler(err, result) {
+    if (err) return showError("Event consuming failed: " + err);
+
+    console.log(result);
+    let owner = result.args['owner'];
+    let cardId = result.args['cardId'];
+    if (owner != web3.eth.accounts[0]) return;
+
+    getCardData(cardId, function(cardData) {
+        $.get('templates/cardSaleRemovedTemplate.html', function(template) {
+            $('#cardSaleRemovedModal').modal();
+
+            var html = Mustache.to_html(template, cardData);
+            $('#cardSaleRemovedModalBody').empty();
+            $('#cardSaleRemovedModalBody').append(html);
         });
     });
 }

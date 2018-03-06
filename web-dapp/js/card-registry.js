@@ -11,17 +11,9 @@ function showCardRegistry() {
         let cardsCnt = result.toNumber();
 
         for (var i = 1; i < cardsCnt; i++) {
-            contract.definedCards(i, function(err, result) {
-                if (err) return showError("Smart contract call failed: " + err);
-                var card = {
-                    name: result[0].toString(),
-                    attack: result[1].toNumber(),
-                    health: result[2].toNumber(),
-                    rarity: parseRarity(result[3].toNumber())
-                };
-
+            getCardData(i, function(cardData) {
                 $.get('templates/cardTemplate.html', function(template) {
-                    var html = Mustache.to_html(template, card);
+                    var html = Mustache.to_html(template, cardData);
                     $('#cards').append(html);
                 });
             });
@@ -29,3 +21,16 @@ function showCardRegistry() {
     });
 }
 
+function getCardData(cardId, callback) {
+    contract.definedCards(cardId, function(err, result) {
+        if (err) return showError("Smart contract call failed: " + err);
+        var cardData = {
+            name: result[0].toString(),
+            attack: result[1].toNumber(),
+            health: result[2].toNumber(),
+            rarity: parseRarity(result[3].toNumber())
+        };
+
+        callback(cardData);
+    });
+}
