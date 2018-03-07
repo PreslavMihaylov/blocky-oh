@@ -25,7 +25,7 @@ function getCardData(cardId, callback) {
     contract.definedCards(cardId, function(err, result) {
         if (err) return showError("Smart contract call failed: " + err);
         var cardData = {
-            name: result[0].toString(),
+            name: web3.toAscii(result[0]),
             attack: result[1].toNumber(),
             health: result[2].toNumber(),
             rarity: parseRarity(result[3].toNumber())

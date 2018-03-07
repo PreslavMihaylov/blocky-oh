@@ -33,7 +33,7 @@ contract CardFactory is Ownable {
 
     enum Rarity { Common, Uncommon, Rare, Unique }
     struct Card {
-        string name;
+        bytes32 name;
         uint8 attack;
         uint8 health;
         Rarity rarity;
@@ -86,7 +86,7 @@ contract CardFactory is Ownable {
         return playerCards[owner];
     }
 
-    function getPlayerCardOf(address owner, uint playerCard) public view returns (string, uint8, uint8, Rarity) {
+    function getPlayerCardOf(address owner, uint playerCard) public view returns (bytes32, uint8, uint8, Rarity) {
         Card memory card = definedCards[playerCards[owner][playerCard]];
 
         return (card.name, card.attack, card.health, card.rarity);
@@ -96,7 +96,7 @@ contract CardFactory is Ownable {
         return definedCards.length;
     }
 
-    function createCard(string name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner {
+    function createCard(bytes32 name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner {
         definedCards.push(Card(name, attack, health, rarity));
     }
 
@@ -108,17 +108,6 @@ contract CardFactory is Ownable {
         uint seed = uint256(block.blockhash(block.number)).add(uint256(now));
 
         return uint(keccak256(seed)) % max;
-    }
-
-    function playerCardCount(address player, uint cardId) internal view returns (uint) {
-        uint count = 0;
-        for (uint i = 0; i < playerCards[player].length; i.add(1)) {
-            if (playerCards[player][i] == cardId) {
-                count.add(1);
-            }
-        }
-
-        return count;
     }
 
     function getStartingDeck() private pure returns (uint[5]) {
@@ -173,7 +162,6 @@ contract BlockyOhMarket is BlockyOhDuel {
     using SafeMath for uint32;
     using SafeMath for uint16;
 
-    uint constant SALE_PAGE_SIZE = 2;
     struct CardSale {
         address owner;
         uint playerCardId;
@@ -186,6 +174,7 @@ contract BlockyOhMarket is BlockyOhDuel {
 
     CardSale[] public cardSales;
     mapping(address => uint[]) salesByPlayer;
+    mapping(uint => uint) cardSaleToPlayerSale;
 
     function BlockyOhMarket() public {
         // genesis sale
@@ -223,7 +212,10 @@ contract BlockyOhMarket is BlockyOhDuel {
         require(getCardSaleOfCard(msg.sender, playerCardId) == 0);
 
         cardSales.push(CardSale(msg.sender, playerCardId, price));
-        salesByPlayer[msg.sender].push(cardSales.length.sub(1));
+        uint saleId = cardSales.length.sub(1);
+
+        salesByPlayer[msg.sender].push(saleId);
+        cardSaleToPlayerSale[saleId] = salesByPlayer[msg.sender].length.sub(1);
 
         NewCardSale(msg.sender, cardSales.length.sub(1));
     }
@@ -236,12 +228,7 @@ contract BlockyOhMarket is BlockyOhDuel {
         uint cardId = playerCards[msg.sender][playerCardId];
 
         delete cardSales[saleId];
-        for (uint i = 0; i < salesByPlayer[msg.sender].length; i.add(1)) {
-            if (salesByPlayer[msg.sender][i] == saleId) {
-                delete salesByPlayer[msg.sender][i];
-                break;
-            }
-        }
+        delete salesByPlayer[msg.sender][cardSaleToPlayerSale[saleId]];
 
         CardSaleRemoved(msg.sender, cardId);
     }
@@ -258,17 +245,11 @@ contract BlockyOhMarket is BlockyOhDuel {
 
         uint boughtCardId = playerCards[saleOwner][ownerCardId];
         playerCards[msg.sender].push(boughtCardId);
+
         delete playerCards[saleOwner][ownerCardId];
-
-        // delete sale from sale owner's sales struct
-        for (uint i = 0; i < salesByPlayer[saleOwner].length; i.add(1)) {
-            if (salesByPlayer[saleOwner][i] == saleId) {
-                delete salesByPlayer[saleOwner][i];
-                break;
-            }
-        }
-
+        delete salesByPlayer[saleOwner][cardSaleToPlayerSale[saleId]];
         delete cardSales[saleId];
+
         saleOwner.transfer(msg.value);
 
         CardBought(msg.sender, boughtCardId);
