@@ -26,7 +26,7 @@ contract Ownable {
     }
 }
 
-contract CardFactory is Ownable {
+contract BlockyOhCardFactory is Ownable {
     using SafeMath for uint256;
     using SafeMath for uint32;
     using SafeMath for uint16;
@@ -39,11 +39,42 @@ contract CardFactory is Ownable {
         Rarity rarity;
     }
 
-    event PlayerRegistered(address player);
-
     Card[] public definedCards;
     mapping(address => uint[]) playerCards;
-    mapping(address => uint) personWinsCount;
+
+    function BlockyOhCardFactory() public {
+        // genesis card
+        definedCards.push(Card("", 0, 0, Rarity.Unique));
+
+        // starting deck
+        definedCards.push(Card("LameWarrior", 10, 1, Rarity.Common));
+        definedCards.push(Card("SemiLameWarrior", 7, 3, Rarity.Common));
+        definedCards.push(Card("AverageDestroyer", 14, 6, Rarity.Common));
+        definedCards.push(Card("CoolDestroyer", 14, 10, Rarity.Common));
+        definedCards.push(Card("TurtleGuy", 2, 15, Rarity.Common));
+    }
+
+    function getCardsOf(address owner) public view returns (uint[]) {
+        return playerCards[owner];
+    }
+
+    function getPlayerCardOf(address owner, uint playerCard) public view returns (bytes32, uint8, uint8, Rarity) {
+        Card storage card = definedCards[playerCards[owner][playerCard]];
+
+        return (card.name, card.attack, card.health, card.rarity);
+    }
+
+    function totalCardsCount() public view returns (uint) {
+        return definedCards.length;
+    }
+
+    function createCard(bytes32 name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner {
+        definedCards.push(Card(name, attack, health, rarity));
+    }
+}
+
+contract BlockyOhAccessControl is BlockyOhCardFactory {
+    event PlayerRegistered(address player);
 
     modifier bothPlayersRegistered(address player1, address player2) {
         require(playerCards[player1].length > 0);
@@ -61,103 +92,28 @@ contract CardFactory is Ownable {
         _;
     }
 
-    function CardFactory() public {
-        // genesis card
-        definedCards.push(Card("", 0, 0, Rarity.Unique));
-
-        // starting deck
-        definedCards.push(Card("LameWarrior", 10, 1, Rarity.Common));
-        definedCards.push(Card("SemiLameWarrior", 7, 3, Rarity.Common));
-        definedCards.push(Card("AverageDestroyer", 14, 6, Rarity.Common));
-        definedCards.push(Card("CoolDestroyer", 14, 10, Rarity.Common));
-        definedCards.push(Card("TurtleGuy", 2, 15, Rarity.Common));
-    }
-
-    function register() public userIsNotRegistered(msg.sender) {
-        playerCards[msg.sender] = getStartingDeck();
-        PlayerRegistered(msg.sender);
-    }
-
     function isPlayerRegistered(address player) public view returns (bool) {
         return playerCards[player].length > 0;
     }
 
-    function getCardsOf(address owner) public view returns (uint[]) {
-        return playerCards[owner];
+    function register() public userIsNotRegistered(msg.sender) {
+        setStartingDeck();
+
+        PlayerRegistered(msg.sender);
     }
 
-    function getPlayerCardOf(address owner, uint playerCard) public view returns (bytes32, uint8, uint8, Rarity) {
-        Card memory card = definedCards[playerCards[owner][playerCard]];
+    function setStartingDeck() private {
+        assert(playerCards[msg.sender].length == 0);
 
-        return (card.name, card.attack, card.health, card.rarity);
-    }
-
-    function totalCardsCount() public view returns (uint) {
-        return definedCards.length;
-    }
-
-    function createCard(bytes32 name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner {
-        definedCards.push(Card(name, attack, health, rarity));
-    }
-
-    function getRandomCard() internal view returns (uint) {
-        return rand(definedCards.length - 1).add(1);
-    }
-
-    function rand(uint max) internal view returns (uint) {
-        uint seed = uint256(block.blockhash(block.number)).add(uint256(now));
-
-        return uint(keccak256(seed)) % max;
-    }
-
-    function getStartingDeck() private pure returns (uint[5]) {
-        uint[5] memory startingDeck;
-        startingDeck[0] = 1;
-        startingDeck[1] = 2;
-        startingDeck[2] = 3;
-        startingDeck[3] = 4;
-        startingDeck[4] = 5;
-
-        return startingDeck;
+        playerCards[msg.sender].push(1);
+        playerCards[msg.sender].push(2);
+        playerCards[msg.sender].push(3);
+        playerCards[msg.sender].push(4);
+        playerCards[msg.sender].push(5);
     }
 }
 
-contract BlockyOhDuel is CardFactory {
-    using SafeMath for uint256;
-    using SafeMath for uint32;
-    using SafeMath for uint16;
-
-    event DuelResult(address challenger, address opponent, bool hasWon);
-    event NewCardWon(address owner, uint cardId);
-
-    function challenge(address opponent) public bothPlayersRegistered(msg.sender, opponent) {
-        require(msg.sender != opponent);
-        uint result = rand(100);
-
-        address winner;
-        if (result < 50) {
-            winner = msg.sender;
-        } else {
-            winner = opponent;
-        }
-
-        personWinsCount[winner].add(1);
-        if (hasWonFiveTimes(winner)) {
-            uint wonCardId = getRandomCard();
-            playerCards[winner].push(wonCardId);
-
-            NewCardWon(msg.sender, wonCardId);
-        }
-
-        DuelResult(msg.sender, opponent, winner == msg.sender);
-    }
-
-    function hasWonFiveTimes(address player) private view returns (bool) {
-        return personWinsCount[player] % 5 == 0;
-    }
-}
-
-contract BlockyOhMarket is BlockyOhDuel {
+contract BlockyOhMarket is BlockyOhAccessControl {
     using SafeMath for uint256;
     using SafeMath for uint32;
     using SafeMath for uint16;
@@ -174,6 +130,7 @@ contract BlockyOhMarket is BlockyOhDuel {
 
     CardSale[] public cardSales;
     mapping(address => uint[]) salesByPlayer;
+    mapping(address => mapping(uint => bool)) playerCardsOnsale;
     mapping(uint => uint) cardSaleToPlayerSale;
 
     function BlockyOhMarket() public {
@@ -209,12 +166,13 @@ contract BlockyOhMarket is BlockyOhDuel {
     function setCardForSale(uint playerCardId, uint price) public {
         require(playerCardId < playerCards[msg.sender].length);
         require(playerCards[msg.sender][playerCardId] != 0);
-        require(getCardSaleOfCard(msg.sender, playerCardId) == 0);
+        require(playerCardsOnsale[msg.sender][playerCardId] == false);
 
         cardSales.push(CardSale(msg.sender, playerCardId, price));
         uint saleId = cardSales.length.sub(1);
 
         salesByPlayer[msg.sender].push(saleId);
+        playerCardsOnsale[msg.sender][playerCardId] = true;
         cardSaleToPlayerSale[saleId] = salesByPlayer[msg.sender].length.sub(1);
 
         NewCardSale(msg.sender, cardSales.length.sub(1));
@@ -255,3 +213,51 @@ contract BlockyOhMarket is BlockyOhDuel {
         CardBought(msg.sender, boughtCardId);
     }
 }
+
+contract BlockyOhDuel is BlockyOhMarket {
+    using SafeMath for uint256;
+    using SafeMath for uint32;
+    using SafeMath for uint16;
+
+    event DuelResult(address challenger, address opponent, bool hasWon);
+    event NewCardWon(address owner, uint cardId);
+
+    mapping(address => uint) personWinsCount;
+
+    function challenge(address opponent) public bothPlayersRegistered(msg.sender, opponent) {
+        require(msg.sender != opponent);
+        uint result = rand(100);
+
+        address winner;
+        if (result < 50) {
+            winner = msg.sender;
+        } else {
+            winner = opponent;
+        }
+
+        personWinsCount[winner].add(1);
+        if (hasWonFiveTimes(winner)) {
+            uint wonCardId = getRandomCard();
+            playerCards[winner].push(wonCardId);
+
+            NewCardWon(msg.sender, wonCardId);
+        }
+
+        DuelResult(msg.sender, opponent, winner == msg.sender);
+    }
+
+    function hasWonFiveTimes(address player) private view returns (bool) {
+        return personWinsCount[player] % 5 == 0;
+    }
+
+    function getRandomCard() internal view returns (uint) {
+        return rand(definedCards.length - 1).add(1);
+    }
+
+    function rand(uint max) internal view returns (uint) {
+        uint seed = uint256(block.blockhash(block.number)).add(uint256(now));
+
+        return uint(keccak256(seed)) % max;
+    }
+}
+
