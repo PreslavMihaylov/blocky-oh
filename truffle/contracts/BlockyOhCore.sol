@@ -21,7 +21,7 @@ contract Ownable {
 
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
 }
@@ -71,10 +71,22 @@ contract BlockyOhCardFactory is Ownable {
     function createCard(bytes32 name, uint8 attack, uint8 health, Rarity rarity) public onlyOwner {
         definedCards.push(Card(name, attack, health, rarity));
     }
+
+    function setStartingDeck() internal {
+        assert(playerCards[msg.sender].length == 0);
+
+        playerCards[msg.sender].push(1);
+        playerCards[msg.sender].push(2);
+        playerCards[msg.sender].push(3);
+        playerCards[msg.sender].push(4);
+        playerCards[msg.sender].push(5);
+    }
 }
 
 contract BlockyOhAccessControl is BlockyOhCardFactory {
     event PlayerRegistered(address player);
+
+    address duelOracle = 0;
 
     modifier bothPlayersRegistered(address player1, address player2) {
         require(playerCards[player1].length > 0);
@@ -92,6 +104,11 @@ contract BlockyOhAccessControl is BlockyOhCardFactory {
         _;
     }
 
+    modifier onlyDuelOracle() {
+        require(msg.sender == duelOracle);
+        _;
+    }
+
     function isPlayerRegistered(address player) public view returns (bool) {
         return playerCards[player].length > 0;
     }
@@ -99,17 +116,11 @@ contract BlockyOhAccessControl is BlockyOhCardFactory {
     function register() public userIsNotRegistered(msg.sender) {
         setStartingDeck();
 
-        PlayerRegistered(msg.sender);
+        emit PlayerRegistered(msg.sender);
     }
 
-    function setStartingDeck() private {
-        assert(playerCards[msg.sender].length == 0);
-
-        playerCards[msg.sender].push(1);
-        playerCards[msg.sender].push(2);
-        playerCards[msg.sender].push(3);
-        playerCards[msg.sender].push(4);
-        playerCards[msg.sender].push(5);
+    function setDuelOracle(address _duelOracle) public onlyOwner {
+        duelOracle = _duelOracle;
     }
 }
 
@@ -175,7 +186,7 @@ contract BlockyOhMarket is BlockyOhAccessControl {
         playerCardsOnsale[msg.sender][playerCardId] = true;
         cardSaleToPlayerSale[saleId] = salesByPlayer[msg.sender].length.sub(1);
 
-        NewCardSale(msg.sender, cardSales.length.sub(1));
+        emit NewCardSale(msg.sender, cardSales.length.sub(1));
     }
 
     function removeCardSale(uint saleId) public {
@@ -188,7 +199,7 @@ contract BlockyOhMarket is BlockyOhAccessControl {
         delete cardSales[saleId];
         delete salesByPlayer[msg.sender][cardSaleToPlayerSale[saleId]];
 
-        CardSaleRemoved(msg.sender, cardId);
+        emit CardSaleRemoved(msg.sender, cardId);
     }
 
     function buyTradedCard(uint saleId) public payable {
@@ -210,7 +221,7 @@ contract BlockyOhMarket is BlockyOhAccessControl {
 
         saleOwner.transfer(msg.value);
 
-        CardBought(msg.sender, boughtCardId);
+        emit CardBought(msg.sender, boughtCardId);
     }
 }
 
@@ -219,6 +230,7 @@ contract BlockyOhDuel is BlockyOhMarket {
     using SafeMath for uint32;
     using SafeMath for uint16;
 
+    event NewChallenge(address challenger, address opponent);
     event DuelResult(address challenger, address opponent, bool hasWon);
     event NewCardWon(address owner, uint cardId);
 
@@ -226,28 +238,30 @@ contract BlockyOhDuel is BlockyOhMarket {
 
     function challenge(address opponent) public bothPlayersRegistered(msg.sender, opponent) {
         require(msg.sender != opponent);
-        uint result = rand(100);
 
+        emit NewChallenge(msg.sender, opponent);
+    }
+
+    function settleDuel(address challenger, address opponent, bool hasWon, uint wonCardId) public onlyDuelOracle {
         address winner;
-        if (result < 50) {
-            winner = msg.sender;
+        if (hasWon) {
+            winner = challenger;
         } else {
             winner = opponent;
         }
 
         personWinsCount[winner].add(1);
-        if (hasWonFiveTimes(winner)) {
-            uint wonCardId = getRandomCard();
+        if (wonCardId != 0) {
             playerCards[winner].push(wonCardId);
 
-            NewCardWon(msg.sender, wonCardId);
+            emit NewCardWon(winner, wonCardId);
         }
 
-        DuelResult(msg.sender, opponent, winner == msg.sender);
+        emit DuelResult(challenger, opponent, winner == challenger);
     }
 
-    function hasWonFiveTimes(address player) private view returns (bool) {
-        return personWinsCount[player] % 5 == 0;
+    function winsCountOf(address player) public view returns (uint) {
+        return personWinsCount[player];
     }
 
     function getRandomCard() internal view returns (uint) {
