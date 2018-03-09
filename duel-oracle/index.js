@@ -9,6 +9,9 @@ newChallengeEvent.watch(function(err, result) {
     console.log(opponent);
     let hasWon = parseInt(Math.random() * 100) < 50;
 
+    // TODO: Remove hard coded winner. Here just for demo
+    hasWon = true;
+
     let winner;
     if (hasWon) {
         winner = challenger;
@@ -20,9 +23,11 @@ newChallengeEvent.watch(function(err, result) {
         if (err) console.log("Smart contract error: " + err);
 
         let winsCount = result.toNumber();
-        console.log(winsCount);
+        console.log("Wins Count: " + winsCount);
 
-        if (winsCount % 5 == 0) {
+        // TODO: Remove. Here just for demo
+        // if (winsCount % 5 == 0 && winsCount != 0) {
+        if (0 == 0) {
             contract.totalCardsCount(function(err, result) {
                 if (err) console.log("Smart contract error: " + err);
 
