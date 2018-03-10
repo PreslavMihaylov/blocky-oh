@@ -28,7 +28,7 @@ contract BlockyOhDuel is BlockyOhMarket {
             winner = opponent;
         }
 
-        personWinsCount[winner].add(1);
+        personWinsCount[winner] = personWinsCount[winner].add(1);
         if (wonCardId != 0) {
             playerCards[winner].push(wonCardId);
 

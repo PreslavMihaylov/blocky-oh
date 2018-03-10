@@ -20,7 +20,7 @@ contract BlockyOhMarket is BlockyOhAccessControl {
 
     CardSale[] public cardSales;
     mapping(address => uint[]) salesByPlayer;
-    mapping(address => mapping(uint => bool)) playerCardsOnsale;
+    mapping(address => mapping(uint => bool)) playerCardsOnSale;
     mapping(uint => uint) cardSaleToPlayerSale;
 
     function BlockyOhMarket() public {
@@ -36,12 +36,12 @@ contract BlockyOhMarket is BlockyOhAccessControl {
         return (saleId, cardSales[saleId].owner, cardSales[saleId].playerCardId, cardSales[saleId].price);
     }
 
-    function getSalesByPlayer(address owner) public view returns (uint[]) {
-        return salesByPlayer[owner];
+    function getSalesByPlayer(address player) public view returns (uint[]) {
+        return salesByPlayer[player];
     }
 
     function getCardSaleOfCard(address player, uint playerCardId) public view returns (uint) {
-        for (uint i = 0; i < salesByPlayer[player].length; i.add(1)) {
+        for (uint i = 0; i < salesByPlayer[player].length; i = i.add(1)) {
             uint currentSale = salesByPlayer[player][i];
             if (cardSales[currentSale].owner == player &&
                 cardSales[currentSale].playerCardId == playerCardId) {
@@ -53,22 +53,22 @@ contract BlockyOhMarket is BlockyOhAccessControl {
         return 0;
     }
 
-    function setCardForSale(uint playerCardId, uint price) public {
+    function setCardForSale(uint playerCardId, uint price) public userIsRegistered(msg.sender) {
         require(playerCardId < playerCards[msg.sender].length);
         require(playerCards[msg.sender][playerCardId] != 0);
-        require(playerCardsOnsale[msg.sender][playerCardId] == false);
+        require(playerCardsOnSale[msg.sender][playerCardId] == false);
 
         cardSales.push(CardSale(msg.sender, playerCardId, price));
         uint saleId = cardSales.length.sub(1);
 
         salesByPlayer[msg.sender].push(saleId);
-        playerCardsOnsale[msg.sender][playerCardId] = true;
+        playerCardsOnSale[msg.sender][playerCardId] = true;
         cardSaleToPlayerSale[saleId] = salesByPlayer[msg.sender].length.sub(1);
 
         NewCardSale(msg.sender, cardSales.length.sub(1));
     }
 
-    function removeCardSale(uint saleId) public {
+    function removeCardSale(uint saleId) public userIsRegistered(msg.sender) {
         require(saleId < cardSales.length);
         require(cardSales[saleId].owner == msg.sender);
 
@@ -77,16 +77,16 @@ contract BlockyOhMarket is BlockyOhAccessControl {
 
         delete cardSales[saleId];
         delete salesByPlayer[msg.sender][cardSaleToPlayerSale[saleId]];
+        playerCardsOnSale[msg.sender][playerCardId] = false;
 
         CardSaleRemoved(msg.sender, cardId);
     }
 
-    function buyTradedCard(uint saleId) public payable {
+    function buyTradedCard(uint saleId) public payable userIsRegistered(msg.sender) {
         require(saleId < cardSales.length);
         require(cardSales[saleId].owner != address(0));
         require(cardSales[saleId].owner != msg.sender);
         require(cardSales[saleId].price == msg.value);
-        require(isPlayerRegistered(msg.sender));
 
         address saleOwner = cardSales[saleId].owner;
         uint ownerCardId = cardSales[saleId].playerCardId;

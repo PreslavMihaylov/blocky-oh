@@ -4,7 +4,6 @@ contract('BlockyOhAccessControl', function(accounts) {
     let contract;
     let _owner = accounts[0];
     let _notOwner = accounts[1];
-    let _oracle = accounts[2];
 
     let STARTING_DECK_CNT = 5;
 
