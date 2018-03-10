@@ -14,10 +14,15 @@ function subscribeToBlockyOhEvents() {
     cardBoughtEvent.watch(cardBoughtHandler);
 }
 
+let lastDuelResultTxHash = 0;
 function duelResultHandler(err, result) {
     if (err) return showError("Event consuming failed: " + err);
-
     console.log(result);
+
+    let duelResultTxHash = result.transactionHash;
+    if (duelResultTxHash == lastDuelResultTxHash) return;
+    lastDuelResultTxHash = duelResultTxHash;
+
     let challenger = result.args['challenger'];
     let opponent = result.args['opponent'];
     let hasWon = result.args['hasWon'];
@@ -25,10 +30,13 @@ function duelResultHandler(err, result) {
         return;
     }
 
+    let isWinner = (hasWon && challenger == web3.eth.accounts[0]) ||
+                   (!hasWon && opponent == web3.eth.accounts[0]);
+
     let duelResult = {
         challenger: challenger == web3.eth.accounts[0] ? "You" : challenger,
         opponent: opponent == web3.eth.accounts[0] ? "You" : opponent,
-        outcome: hasWon ? "You have won" : "You have lost"
+        outcome: isWinner ? "You have won" : "You have lost"
     };
 
     $.get('templates/duelResultTemplate.html', function(template) {
@@ -37,7 +45,7 @@ function duelResultHandler(err, result) {
         $('#duelResultModalBody').empty();
         $('#duelResultModalBody').append(html);
 
-        if (hasWon) {
+        if (isWinner) {
            $('#duelResultOutcome').removeClass('btn-danger');
            $('#duelResultOutcome').addClass('btn-success');
         } else {
@@ -47,10 +55,15 @@ function duelResultHandler(err, result) {
     });
 }
 
+let lastNewCardWonTxHash = 0;
 function newCardWonHandler(err, result) {
     if (err) return showError("Event consuming failed: " + err);
-
     console.log(result);
+
+    let newCardWonTxHash = result.transactionHash;
+    if (newCardWonTxHash == lastNewCardWonTxHash) return;
+    lastNewCardWonTxHash = newCardWonTxHash;
+
     let owner = result.args['owner'];
     let cardId = result.args['cardId'];
     if (owner != web3.eth.accounts[0]) return;
@@ -66,10 +79,15 @@ function newCardWonHandler(err, result) {
     });
 }
 
+let lastPlayerRegisteredTxHash = 0;
 function playerRegisteredHandler(err, result) {
     if (err) return showError("Event consuming failed: " + err);
-
     console.log(result);
+
+    let playerRegisteredTxHash = result.transactionHash;
+    if (playerRegisteredTxHash == lastPlayerRegisteredTxHash) return;
+    lastPlayerRegisteredTxHash = playerRegisteredTxHash;
+
     let player = result.args['player'];
     if (player != web3.eth.accounts[0]) return;
 
@@ -82,10 +100,15 @@ function playerRegisteredHandler(err, result) {
     });
 }
 
+let lastNewCardSaleTxHash = 0;
 function newCardSaleHandler(err, result) {
     if (err) return showError("Event consuming failed: " + err);
-
     console.log(result);
+
+    let newCardSaleTxHash = result.transactionHash;
+    if (newCardSaleTxHash == lastNewCardSaleTxHash) return;
+    lastNewCardSaleTxHash = newCardSaleTxHash;
+
     let owner = result.args['owner'];
     let saleId = result.args['saleId'];
     if (owner != web3.eth.accounts[0]) return;
@@ -101,10 +124,15 @@ function newCardSaleHandler(err, result) {
     });
 }
 
+let lastCardSaleRemovedTxHash = 0;
 function cardSaleRemovedHandler(err, result) {
     if (err) return showError("Event consuming failed: " + err);
-
     console.log(result);
+
+    let cardSaleRemovedTxHash = result.transactionHash;
+    if (cardSaleRemovedTxHash == lastCardSaleRemovedTxHash) return;
+    lastCardSaleRemovedTxHash = cardSaleRemovedTxHash;
+
     let owner = result.args['owner'];
     let cardId = result.args['cardId'];
     if (owner != web3.eth.accounts[0]) return;
@@ -120,10 +148,15 @@ function cardSaleRemovedHandler(err, result) {
     });
 }
 
+let lastCardBoughtTxHash = 0;
 function cardBoughtHandler(err, result) {
     if (err) return showError("Event consuming failed: " + err);
-
     console.log(result);
+
+    let cardBoughtTxHash = result.transactionHash;
+    if (cardBoughtTxHash == lastCardBoughtTxHash) return;
+    lastCardBoughtTxHash = cardBoughtTxHash;
+
     let owner = result.args['owner'];
     let cardId = result.args['cardId'];
     if (owner != web3.eth.accounts[0]) return;

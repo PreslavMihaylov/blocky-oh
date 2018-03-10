@@ -1,7 +1,13 @@
 let newChallengeEvent = contract.NewChallenge();
 
+let lastNewChallengeTxHash = 0;
 newChallengeEvent.watch(function(err, result) {
     if (err) console.log("Smart contract error: " + err);
+    console.log(result);
+
+    let newChallengeTxHash = result.transactionHash;
+    if (newChallengeTxHash == lastNewChallengeTxHash) return;
+    lastNewChallengeTxHash = newChallengeTxHash;
 
     let challenger = result.args['challenger'];
     let opponent = result.args['opponent'];

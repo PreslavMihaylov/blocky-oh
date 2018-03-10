@@ -55,6 +55,7 @@ function showInfo(message) {
 }
 
 function showError(errorMsg) {
+    console.log(errorMsg);
     $('#errorBox>p').html("Error: " + errorMsg);
     $('#errorBox').show();
     $('#errorBox>button').click(function () {

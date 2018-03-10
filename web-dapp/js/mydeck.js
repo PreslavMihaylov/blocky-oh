@@ -9,6 +9,7 @@ function displayDeck() {
 
         for (let i = 0; i < result.length; i++) {
             let cardId = result[i].toNumber();
+            if (cardId == 0) continue;
 
             // used to preserve player card id in callback
             showMyCard(i, cardId);
