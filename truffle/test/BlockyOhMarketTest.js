@@ -226,25 +226,6 @@ contract('BlockyOhMarket', function(accounts) {
             assert.equal(web3.toAscii(expectedCard[0]), web3.toAscii(actualCard[0]));
         });
 
-        it("should transfer card price paid to owner once the card is sold", async function() {
-            let SALE_ID = 1;
-            let PLAYER_CARD_FOR_SALE = 0;
-            let CARD_PRICE = 10000000;
-            let INVALID_CARD_ID = 0;
-
-            await contract.register({from: _owner});
-            await contract.register({from: _notOwner});
-
-            await contract.setCardForSale(PLAYER_CARD_FOR_SALE, CARD_PRICE, {from: _owner});
-            let originalBalance = await web3.eth.getBalance(_owner);
-
-            await contract.buyTradedCard(SALE_ID, {from: _notOwner, value: CARD_PRICE});
-
-            let balanceAfterSale = await web3.eth.getBalance(_owner);
-
-            assert.equal(originalBalance.toNumber() + CARD_PRICE, balanceAfterSale.toNumber());
-        });
-
         it("should delete player card after a card is bought", async function() {
             let SALE_ID = 1;
             let PLAYER_CARD_FOR_SALE = 0;
