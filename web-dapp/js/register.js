@@ -7,7 +7,7 @@ function validatePlayerRegistered(templateDivId, callback) {
     if (!myAddress) return showError("Please log in to MetaMask");
 
     contract.isPlayerRegistered(myAddress, function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
+        if (err) return showError("Smart contract call failed: ", err);
 
         let isRegistered = result;
         console.log(isRegistered);
@@ -40,7 +40,7 @@ function registerPlayer() {
     if (!myAddress) return showError("Please log in to MetaMask");
 
     contract.register(function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
+        if (err) return showError("Smart contract call failed: ", err);
 
         return showInfo("Blocky-Oh registration pending");
     });

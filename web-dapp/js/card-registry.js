@@ -7,7 +7,7 @@ function showCardRegistry() {
     if (!myAddress) return showError("Please log in to MetaMask");
 
     contract.totalCardsCount(function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
+        if (err) return showError("Smart contract call failed: ", err);
         let cardsCnt = result.toNumber();
 
         for (var i = 1; i < cardsCnt; i++) {
@@ -25,6 +25,7 @@ function getCardData(cardId, callback) {
     contract.definedCards(cardId, function(err, result) {
         if (err) return showError("Smart contract call failed: " + err);
         var cardData = {
+            cardId: cardId,
             name: web3.toAscii(result[0]),
             attack: result[1].toNumber(),
             health: result[2].toNumber(),

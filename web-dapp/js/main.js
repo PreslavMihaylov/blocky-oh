@@ -54,8 +54,16 @@ function showInfo(message) {
     });
 }
 
-function showError(errorMsg) {
-    console.log(errorMsg);
+function showError(msg, error) {
+    let errorMsg;
+    if (error) {
+        console.log(error);
+        let parsedError = parseError(error);
+        errorMsg = msg + parsedError;
+    } else {
+        errorMsg = msg;
+    }
+
     $('#errorBox>p').html("Error: " + errorMsg);
     $('#errorBox').show();
     $('#errorBox>button').click(function () {

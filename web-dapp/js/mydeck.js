@@ -5,7 +5,7 @@ function showMyDeck() {
 function displayDeck() {
     let myAddress = web3.eth.accounts[0];
     contract.getCardsOf.call(myAddress, function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
+        if (err) return showError("Smart contract call failed: ", err);
 
         for (let i = 0; i < result.length; i++) {
             let cardId = result[i].toNumber();
@@ -21,7 +21,7 @@ function showMyCard(playerCardId, cardId) {
     getCardData(cardId, function(cardData) {
         let owner = web3.eth.accounts[0];
         contract.getCardSaleOfCard(owner, playerCardId, function(err, result) {
-            if (err) return showError("Smart contract call failed: " + err);
+            if (err) return showError("Smart contract call failed: ", err);
             cardData['saleId'] = result.toNumber();
             cardData['playerCardId'] = playerCardId;
             let templateLoc;

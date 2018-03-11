@@ -16,7 +16,7 @@ function subscribeToBlockyOhEvents() {
 
 let lastDuelResultTxHash = 0;
 function duelResultHandler(err, result) {
-    if (err) return showError("Event consuming failed: " + err);
+    if (err) return showError("Event consuming failed: ", err);
     console.log(result);
 
     let duelResultTxHash = result.transactionHash;
@@ -57,7 +57,7 @@ function duelResultHandler(err, result) {
 
 let lastNewCardWonTxHash = 0;
 function newCardWonHandler(err, result) {
-    if (err) return showError("Event consuming failed: " + err);
+    if (err) return showError("Event consuming failed: ", err);
     console.log(result);
 
     let newCardWonTxHash = result.transactionHash;
@@ -81,7 +81,7 @@ function newCardWonHandler(err, result) {
 
 let lastPlayerRegisteredTxHash = 0;
 function playerRegisteredHandler(err, result) {
-    if (err) return showError("Event consuming failed: " + err);
+    if (err) return showError("Event consuming failed: ", err);
     console.log(result);
 
     let playerRegisteredTxHash = result.transactionHash;
@@ -102,7 +102,7 @@ function playerRegisteredHandler(err, result) {
 
 let lastNewCardSaleTxHash = 0;
 function newCardSaleHandler(err, result) {
-    if (err) return showError("Event consuming failed: " + err);
+    if (err) return showError("Event consuming failed: ", err);
     console.log(result);
 
     let newCardSaleTxHash = result.transactionHash;
@@ -126,7 +126,7 @@ function newCardSaleHandler(err, result) {
 
 let lastCardSaleRemovedTxHash = 0;
 function cardSaleRemovedHandler(err, result) {
-    if (err) return showError("Event consuming failed: " + err);
+    if (err) return showError("Event consuming failed: ", err);
     console.log(result);
 
     let cardSaleRemovedTxHash = result.transactionHash;
@@ -150,7 +150,7 @@ function cardSaleRemovedHandler(err, result) {
 
 let lastCardBoughtTxHash = 0;
 function cardBoughtHandler(err, result) {
-    if (err) return showError("Event consuming failed: " + err);
+    if (err) return showError("Event consuming failed: ", err);
     console.log(result);
 
     let cardBoughtTxHash = result.transactionHash;

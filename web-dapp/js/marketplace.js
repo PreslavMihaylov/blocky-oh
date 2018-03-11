@@ -19,7 +19,7 @@ function showAllCardSales() {
 
 function getCardSaleData(saleId, callback) {
     contract.getCardSale.call(saleId, function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
+        if (err) return showError("Smart contract call failed: ", err);
 
         var playerCardId = result[2].toNumber();
         var owner = result[1];
@@ -54,7 +54,7 @@ function removeCardSale(saleId) {
     }
 
     contract.removeCardSale(saleId, function(err, result) {
-        if (err) showError("Call to smart contract failed: " + err);
+        if (err) showError("Call to smart contract failed: ", err);
 
         showInfo("Removing card from sale pending...");
     });
@@ -66,7 +66,7 @@ function buyCard(saleId) {
     }
 
     contract.cardSales(saleId, function(err, result) {
-        if (err) return showError("Smart contract call failed: " + err);
+        if (err) return showError("Smart contract call failed: ", err);
 
         console.log(result);
         if (result[0] == web3.eth.accounts[0]) {
@@ -76,7 +76,7 @@ function buyCard(saleId) {
 
         let cardPrice = result[2].toNumber();
         contract.buyTradedCard(saleId, {value: cardPrice}, function(err, result) {
-             if (err) return showError("Smart contract call failed: " + err);
+             if (err) return showError("Smart contract call failed: ", err);
              showInfo("Card purchase pending...");
         });
     });
@@ -92,7 +92,7 @@ function sellCard(playerCardId) {
         if (price === "") return false;
 
         contract.setCardForSale(playerCardId, web3.toWei(price, "ether"), function(err, result) {
-            if (err) return showError("Smart contract call failed: " + err);
+            if (err) return showError("Smart contract call failed: ", err);
             showInfo("Card Sale publishing pending...");
         });
     });

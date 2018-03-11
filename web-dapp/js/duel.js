@@ -14,7 +14,7 @@ function performDuel() {
         if (!opponent) return showError("Invalid opponent. Try again");
 
         contract.isPlayerRegistered(opponent, function(err, result) {
-            if (err) return showError("Smart contract call failed: " + err);
+            if (err) return showError("Smart contract call failed: ", err);
 
             let isOpponentRegistered = result;
             if (!isOpponentRegistered) {
@@ -22,7 +22,7 @@ function performDuel() {
             }
 
             contract.challenge(opponent, function(err, result) {
-                if (err) return showError("Smart contract call failed: " + err);
+                if (err) return showError("Smart contract call failed: ", err);
                 // Result is read by consuming DuelResult event
             });
         });
