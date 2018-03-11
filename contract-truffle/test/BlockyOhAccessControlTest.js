@@ -41,7 +41,7 @@ contract('BlockyOhAccessControl', function(accounts) {
             let expectedCard = await contract.definedCards(playerCards[0].toNumber());
             let actualCard = await contract.getPlayerCardOf(_owner, 0);
 
-            assert.equal(web3.toAscii(expectedCard[0]), web3.toAscii(actualCard[0]));
+            assert.equal(web3.toAscii(expectedCard[0]), web3.toAscii(actualCard[1]));
         });
 
         it("should not register player twice", async function() {

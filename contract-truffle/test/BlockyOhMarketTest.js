@@ -223,7 +223,7 @@ contract('BlockyOhMarket', function(accounts) {
             let cardId = playerCards[playerCards.length - 1].toNumber();
             let actualCard = await contract.definedCards(cardId);
 
-            assert.equal(web3.toAscii(expectedCard[0]), web3.toAscii(actualCard[0]));
+            assert.equal(web3.toAscii(expectedCard[1]), web3.toAscii(actualCard[0]));
         });
 
         it("should delete player card after a card is bought", async function() {
