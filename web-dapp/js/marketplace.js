@@ -27,7 +27,7 @@ function getCardSaleData(saleId, callback) {
 
         var cardSale = {
             owner: owner,
-            price: Number(weiToEth(result[3].toNumber())).toFixed(20).replace(/\.?0+$/,""),
+            price: web3.fromWei(result[3].toNumber(), "ether"),
             saleId: result[0].toNumber()
         };
 
@@ -91,7 +91,7 @@ function sellCard(playerCardId) {
         if (price === false) return false;
         if (price === "") return false;
 
-        contract.setCardForSale(playerCardId, ethToWei(price), function(err, result) {
+        contract.setCardForSale(playerCardId, web3.toWei(price, "ether"), function(err, result) {
             if (err) return showError("Smart contract call failed: " + err);
             showInfo("Card Sale publishing pending...");
         });

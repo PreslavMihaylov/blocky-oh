@@ -25,11 +25,3 @@ function parseRarity(rarity) {
     }
 }
 
-function weiToEth(wei) {
-    return wei / 1000000000000000000;
-}
-
-function ethToWei(eth) {
-    return eth * 1000000000000000000;
-}
-
