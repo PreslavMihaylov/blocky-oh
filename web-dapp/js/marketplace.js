@@ -36,12 +36,13 @@ function getCardSaleData(saleId, callback) {
         }
 
         contract.getPlayerCardOf.call(owner, playerCardId, function(err, result) {
-            if (err) return showError("Smart contract call failed: " + err);
+            if (err) return showError("Smart contract call failed: ", err);
 
-            cardSale['name'] = web3.toAscii(result[0]);
-            cardSale['attack'] = result[1].toNumber();
-            cardSale['health'] = result[2].toNumber();
-            cardSale['rarity'] = parseRarity(result[3].toNumber());
+            cardSale['cardId'] = result[0].toNumber();
+            cardSale['name'] = web3.toAscii(result[1]);
+            cardSale['attack'] = result[2].toNumber();
+            cardSale['health'] = result[3].toNumber();
+            cardSale['rarity'] = parseRarity(result[4].toNumber());
 
             callback(cardSale);
         });
