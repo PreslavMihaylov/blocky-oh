@@ -37,10 +37,10 @@ contract BlockyOhAccessControl is BlockyOhCardFactory {
         return playerCards[owner];
     }
 
-    function getPlayerCardOf(address owner, uint playerCard) public view returns (bytes32, uint8, uint8, Rarity) {
-        Card storage card = definedCards[playerCards[owner][playerCard]];
+    function getPlayerCardOf(address owner, uint playerCard) public view returns (uint, bytes32, uint8, uint8, Rarity) {
+        uint cardId = playerCards[owner][playerCard];
 
-        return (card.name, card.attack, card.health, card.rarity);
+        return (cardId, definedCards[cardId].name, definedCards[cardId].attack, definedCards[cardId].health, definedCards[cardId].rarity);
     }
 
     function register() public userIsNotRegistered(msg.sender) {

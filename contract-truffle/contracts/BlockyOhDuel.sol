@@ -5,8 +5,6 @@ import './SafeMath.sol';
 
 contract BlockyOhDuel is BlockyOhMarket {
     using SafeMath for uint256;
-    using SafeMath for uint32;
-    using SafeMath for uint16;
 
     event NewChallenge(address challenger, address opponent);
     event DuelResult(address challenger, address opponent, bool hasWon);

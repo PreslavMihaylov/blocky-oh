@@ -5,8 +5,6 @@ import './SafeMath.sol';
 
 contract BlockyOhMarket is BlockyOhAccessControl {
     using SafeMath for uint256;
-    using SafeMath for uint32;
-    using SafeMath for uint16;
 
     struct CardSale {
         address owner;
